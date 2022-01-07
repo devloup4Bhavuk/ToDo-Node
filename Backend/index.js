@@ -16,25 +16,6 @@ const List = require('./modals/list_modal')
 
 app.use(cors());
 app.use(express.json());
-// custom middleware
-app.use(function(req,res,next){
-    fs.readFile("../data/todo.txt",function(err,data){
-        if(err){
-            res.statusCode = 500;
-            console.log(err)
-            res.send("some problem in server");
-            return
-        }
-        if(Object.keys(data).length === 0){
-            data = JSON.stringify({})
-        }
-        req.body.fileData = data
-        // console.log(JSON.parse(data))
-        next()
-    })
-})
-
-
 
 
 app.get("/todo",function(req,res){
@@ -66,7 +47,6 @@ app.post("/save",function(req,res){
 })
 
 app.all("/todo",function(req,res){
-    // let filedata = JSON.parse(req.body.fileData)
     if(req.method === "PUT"){
         List.updateOne({ _id: req.body.key },{item:req.body.data})
         .then(()=>{
@@ -85,10 +65,6 @@ app.all("/todo",function(req,res){
     res.send();
 });
 
-// app.delete("/todo",function(req,res){
-//     let filedata = JSON.parse(req.body.fileData)
-//     res.json("deleted")
-// });
 
 app.listen("8000",function(){
     console.log("app listening on port 8000");
